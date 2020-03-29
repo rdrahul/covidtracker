@@ -39,16 +39,22 @@ def getData():
     result = []
     total = {}
     for i,item in enumerate(entries) :
-        
-        dict_obj = {
+        for j, _ in enumerate(item):
+            # print (type(item[j]) is str  )
+            if ( type(item[j]) is str ):
+                item[j] = str(item[j]).replace('+','').replace(',','');    
+            else:
+                item[j] = int(item[j])
+
+        dict_obj = {    
             "name" : item[0],   
-            "totalCases": str( int(item[1])),
-            "newCases" : str( int(item[2])),
-            "totalDeaths" :str( int(item[3]) ),
-            "newDeaths" : str(int(item[4])),
-            "recovered" : str(int(item[5])),
-            "active" : str(int(item[6])),
-            "serious" : str(int(item[7]))
+            "totalCases": str( item[1]),
+            "newCases" : str( ( str(item[2]).replace('+','')) ),
+            "totalDeaths" :str( item[3] ),
+            "newDeaths" : str((item[4])),
+            "recovered" : str((item[5])),
+            "active" : str((item[6])),
+            "serious" : str((item[7]))
         }
         if i==(len(entries)-1) :
             total = dict_obj

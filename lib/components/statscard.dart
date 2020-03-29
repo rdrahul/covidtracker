@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:corona/models/stats.dart';
+import 'package:corona/pages/details.page.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter/material.dart';
@@ -24,7 +25,15 @@ class StatsCard extends StatelessWidget {
                 ),
                 child: InkWell(
                                     
-                  onTap: (){log("Tapped -- "); },
+                  onTap: (){ 
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailsPage(stats: stats),
+                        ), // opens the details page
+                      );
+                   },
+
                   child: Container(
                       width: ScreenUtil().setWidth(680),
                       height: ScreenUtil().setHeight(1250),
