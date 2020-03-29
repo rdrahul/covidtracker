@@ -1,22 +1,21 @@
-import 'package:corona/mocks.dart';
+
+import 'package:corona/repository/stats.repository.dart';
 import 'package:corona/utils/profileclipper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'components/brandselector.dart';
 import 'components/statscard.dart';
 
 import 'models/stats.dart';
 
 void main() => runApp(MyApp());
-
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'CoronaTracker',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -35,13 +34,20 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Stats> stats = Statistics ;
-    
+  Future<List<Stats>> futureStats;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    futureStats = getStats();
+  }
+   
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context ,  width : 1125 , height : 2436 , allowFontScaling : true );
     return Scaffold(
-      backgroundColor: Colors.grey.shade300 ,
+      backgroundColor: Colors.grey.shade200 ,
       body: SingleChildScrollView(
         child : Column(
           crossAxisAlignment:  CrossAxisAlignment.start,
@@ -73,7 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Padding(
                   padding: EdgeInsets.only(top: ScreenUtil().setHeight(20) ),
                   
-                  child: StatsRow("16,093 ","Total Deaths", fontSize: 150)
+                  child: StatsRow("16,093 ","Total Deaths", fontSize: 130)
                 ),
                 
                 ],)
@@ -86,24 +92,10 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox( height : ScreenUtil().setHeight(50) ),
             SizedBox( 
               height:  ScreenUtil().setHeight(1100),
-              child: ListView.builder(
-                scrollDirection : Axis.horizontal,
-                physics  :BouncingScrollPhysics(),
-                itemCount: stats.length ,
-                itemBuilder: (context , index){
-                  Stats stat = stats[index];
-                  return Padding(
-                    padding : EdgeInsets.only(
-                      top : ScreenUtil().setHeight(50),
-                      left : ScreenUtil().setWidth(100)
-                    ),
-                    child: StatsCard( 
-                      stats : stat , 
-                      cardNum : index
-                    ),
-                  );
-                },
-              )
+              child: FutureBuilder<List<Stats>>(
+                              future: futureStats,
+                              builder: DisplayStats, 
+              ),
             )
           ]
         )
@@ -111,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget StatsRow( String number , String title , {int fontSize = 180}){
+  Widget StatsRow( String number , String title , {int fontSize = 150}){
     return Row( 
                     textBaseline: TextBaseline.alphabetic,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -164,6 +156,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             );
+  }
+
+  Widget DisplayStats(context ,snapshot){
+    if (snapshot.hasData) {
+      List<Stats> stats = snapshot.data;
+                return ListView.builder(
+                  scrollDirection : Axis.horizontal,
+                  physics  :BouncingScrollPhysics(),
+                  itemCount: stats.length ,
+                  itemBuilder: (context , index){
+                    Stats stat = stats[index];
+                    return Padding(
+                      padding : EdgeInsets.only(
+                        top : ScreenUtil().setHeight(50),
+                        left : ScreenUtil().setWidth(100)
+                      ),
+                      child: StatsCard( 
+                        stats : stat , 
+                        cardNum : index
+                      ),
+                    );
+                  },
+                );
+
+              } else if (snapshot.hasError) {
+                return Text("${snapshot.error}");
+              }
+
+              // By default, show a loading spinner.
+              return CircularProgressIndicator();
   }
 
 }

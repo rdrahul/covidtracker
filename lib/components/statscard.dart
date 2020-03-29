@@ -27,7 +27,7 @@ class StatsCard extends StatelessWidget {
                   onTap: (){log("Tapped -- "); },
                   child: Container(
                       width: ScreenUtil().setWidth(680),
-                      height: ScreenUtil().setHeight(1190),
+                      height: ScreenUtil().setHeight(1250),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                             colors: stats.colors,
@@ -49,7 +49,7 @@ class StatsCard extends StatelessWidget {
     );
   }
 
-  Widget CardContents(stats) {
+  Widget CardContents(Stats stats) {
     return Stack(
       children: <Widget>[
         Positioned(
@@ -71,11 +71,11 @@ class StatsCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 SubHeading("Total Cases"),
-                Stat("81,923"),
+                Stat(stats.totalCases),
                 SubHeading("Total Deaths"),
-                Stat("3,303"),
+                Stat(stats.newDeaths),
                 SubHeading("Total Recovered"),
-                Stat("73,159"),
+                Stat(stats.recovered)
               ],
             ))
       ],
@@ -101,7 +101,7 @@ class StatsCard extends StatelessWidget {
           text,
           style: TextStyle(
               fontFamily: "Montserrat",
-              fontSize: ScreenUtil().setSp(110),
+              fontSize: ScreenUtil().setSp(90),
               fontWeight: FontWeight.w500,
               color: Colors.white,
               letterSpacing: 3.0),
