@@ -1,5 +1,7 @@
+import 'package:corona/components/banner.dart';
 import 'package:corona/repository/stats.repository.dart';
 import 'package:corona/utils/profileclipper.dart';
+import 'package:corona/utils/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  Future<Map<String,dynamic>> futureStats;
+  Future<Map<String, dynamic>> futureStats;
   Stats totalStats;
 
   @override
@@ -41,81 +43,170 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     futureStats = null;
     futureStats = getStats();
-    futureStats.then( (val) => {
-      setState( () => {
-        totalStats = val["total"]
-      })
-    });
+    futureStats.then((val) => {
+          setState(() => {totalStats = val["total"]})
+        });
   }
 
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 1125, height: 2436, allowFontScaling: true);
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor:  Color(0xfffdfdfd), //Colors.grey.shade200,
       body: SingleChildScrollView(
-          child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-            Navbar(),
-            Padding(
-                padding: EdgeInsets.only(
-                    left: ScreenUtil().setWidth(70),
-                    right: ScreenUtil().setWidth(10),
-                    top: ScreenUtil().setHeight(100),
-                    bottom: ScreenUtil().setHeight(140)),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding:
-                          EdgeInsets.only(bottom: ScreenUtil().setHeight(40)),
-                      // ---------- heading -------- 
-                      child: Text("COVID-19",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            fontSize: ScreenUtil().setSp(102),
-                            color: Colors.black54,
-                            fontFamily: "Montserrat",
-                            fontWeight: FontWeight.w700,
-                          )),
-                    ),
-
-                    // ---------- First Row  --------
-                    Padding(
-                        padding: EdgeInsets.only(
-                            top: ScreenUtil().setHeight(40),
-                            bottom: ScreenUtil().setHeight(40)),
-                        child: statsRow(
-                          totalStats != null ? totalStats.totalCases : "0",
-                          "Total Cases",
-                        )),
-
-                    // ---------- Second Row  --------
-                    Padding(
+          child: ConstrainedBox(
+        constraints: BoxConstraints(),
+        child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Navbar(),
+              Padding(
+                  padding: EdgeInsets.only(
+                      left: ScreenUtil().setWidth(10),
+                      right: ScreenUtil().setWidth(10),
+                      top: ScreenUtil().setHeight(50),
+                      bottom: ScreenUtil().setHeight(40)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Padding(
                         padding:
-                            EdgeInsets.only(top: ScreenUtil().setHeight(20)),
-                        child:
-                            statsRow(
-                              totalStats != null ? totalStats.totalDeaths : "0",
-                               "Total Deaths", fontSize: 130)),
-                  ],
-                )),
-            Padding(
-                padding: EdgeInsets.only(
-                    top: ScreenUtil().setHeight(20),
-                    left: ScreenUtil().setWidth(70)),
-                child: statsRow("Statistics By Countries", "", fontSize: 50)),
-            SizedBox(height: ScreenUtil().setHeight(50)),
-            SizedBox(
-              height: ScreenUtil().setHeight(1100),
-              child: FutureBuilder<Map<String, dynamic>>(
-                future: futureStats,
-                builder: displayStats,
+                            EdgeInsets.only(bottom: ScreenUtil().setHeight(20), left : ScreenUtil().setWidth(60)),
+                        // ---------- heading --------
+                        child: Text("COVID-19",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              fontSize: ScreenUtil().setSp(68),
+                              color: Colors.black54,
+                              fontFamily: "Montserrat",
+                              fontWeight: FontWeight.w700,
+                            )),
+                      ),
+
+                      // ---------- First Row  --------
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                        children: <Widget>[
+                              Row(
+                        children: <Widget>[
+                          
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  top: ScreenUtil().setHeight(40),
+                                  bottom: ScreenUtil().setHeight(40)),
+                              child: heroStatsCard(
+                                  totalStats != null
+                                      ? FormatNumber(totalStats.totalCases)
+                                      : "0",
+                                  " Cases", Color(0xff544df3) ) ,   ),
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: ScreenUtil().setHeight(40)),
+                              child: heroStatsCard(
+                                  totalStats != null
+                                      ? FormatNumber(totalStats.totalDeaths)
+                                      : "0",
+                                  " Deaths" , Color(0xffff5053) )),
+                          
+                          Padding(
+                              padding: EdgeInsets.only(
+                                  left: ScreenUtil().setHeight(40)),
+                              child: heroStatsCard(
+                                  totalStats != null
+                                      ? FormatNumber(totalStats.totalDeaths)
+                                      : "0",
+                                  " Recovered" , Color(0xffffad3d) )),
+                                  
+
+
+                        ],
+                      ),
+
+
+                          
+                        ],
+                      ),
+                      ),
+
+                      // ---------- Second Row  --------
+                    ],
+                  )),
+              Padding(
+                  padding: EdgeInsets.only(
+                      top: ScreenUtil().setHeight(50),
+                      left: ScreenUtil().setWidth(70)),
+                  child: statsRow("Statistics By Countries", "", fontSize: 50)),
+              SizedBox(height: ScreenUtil().setHeight(20)),
+              SizedBox(
+                height: ScreenUtil().setHeight(1000),
+                child: FutureBuilder<Map<String, dynamic>>(
+                  future: futureStats,
+                  builder: displayStats,
+                ),
               ),
-            )
-          ])),
+              Guidelines()
+            ]),
+      )),
     );
+  }
+
+  Widget heroStatsCard(number, title , color ) {
+    return Container(
+        margin: EdgeInsets.only(left : 10),
+        width: 150,
+        alignment: Alignment.centerLeft,
+        
+        padding: EdgeInsets.only(
+            left: 10,
+            top: ScreenUtil().setHeight(100),
+            bottom: ScreenUtil().setHeight(100)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8),
+
+
+          //purrpl = 0xff544df3
+          //red = 0xffff5053
+          //yel = 0xffffad3d
+          //background : 0xffe9e9ff
+
+          color : color,
+          // gradient: LinearGradient(colors: [
+          //   Colors.grey.shade200,
+          //   Colors.blue.shade200
+          // ]),
+          boxShadow: [BoxShadow(
+                              blurRadius: 4,
+                              color: color.withAlpha(200) ,
+                              offset: Offset(0, 1)) 
+          ],
+        ),
+        
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+          
+          Text(
+            number,
+            textAlign: TextAlign.left,
+            style: TextStyle(
+              fontSize: ScreenUtil().setSp(67),
+              color: Colors.white,
+              fontFamily: "Montserrat",
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(title , textAlign: TextAlign.left,
+            style: TextStyle(
+               fontSize: ScreenUtil().setSp(40),
+              color: Colors.white70,
+              fontFamily: "Montserrat",
+              fontWeight: FontWeight.w700,
+            ),
+           ),
+        ]));
   }
 
   Widget statsRow(String number, String title, {int fontSize = 150}) {
@@ -144,38 +235,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget Navbar() {
     return Container();
-    return Padding(
-      padding: EdgeInsets.only(
-          top: ScreenUtil().setHeight(80),
-          left: ScreenUtil().setWidth(40),
-          right: ScreenUtil().setWidth(40)),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Text(
-            "COVID-19",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                fontSize: ScreenUtil().setSp(102),
-                color: Colors.black54,
-                fontFamily: "Montserrat",
-                fontWeight: FontWeight.w700),
-          ),
-
-          // IconButton(
-          //   icon : Icon(Icons.menu),
-          //   onPressed: ( ){},
-          // ),
-          ClipOval(
-              clipper: ProfileClipper(),
-              child: Image.asset("assets/images/corona.jpeg",
-                  width: ScreenUtil().setWidth(120),
-                  height: ScreenUtil().setHeight(120),
-                  fit: BoxFit.cover)),
-          // SizedBox(width: 30,),
-        ],
-      ),
-    );
   }
 
   /**
@@ -185,7 +244,6 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget displayStats(context, snapshot) {
     if (snapshot.hasData) {
       List<Stats> stats = snapshot.data["all"];
-      
 
       return ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -196,7 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
           return Padding(
             padding: EdgeInsets.only(
                 top: ScreenUtil().setHeight(50),
-                left: ScreenUtil().setWidth(100)),
+                left: ScreenUtil().setWidth(50)),
             child: StatsCard(stats: stat, cardNum: index),
           );
         },
@@ -206,23 +264,9 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // By default, show a loading spinner.
-    return  SizedBox( 
-      width: ScreenUtil().setHeight(50), 
-      height: ScreenUtil().setWidth(50), 
-      child: CircularProgressIndicator()) ;
-  }
-
-  //Formats the number with commas
-  //3445456 => 3,445,456
-  String FormatNumber(String number){
-    String formatted = "";
-    int len = number.length;
-    for( var i=0;i<len;i--){
-      if ( len -i % 3 == 0){
-        formatted += ',';
-      }
-      formatted += number[i];
-    }
-    return formatted;
+    return SizedBox(
+        width: ScreenUtil().setHeight(50),
+        height: ScreenUtil().setWidth(50),
+        child: CircularProgressIndicator());
   }
 }

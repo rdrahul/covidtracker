@@ -1,10 +1,12 @@
-import 'dart:developer';
 
 import 'package:corona/models/stats.dart';
 import 'package:corona/pages/details.page.dart';
+import 'package:corona/utils/styles.dart';
+import 'package:corona/utils/utilities.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class StatsCard extends StatelessWidget {
   final Stats stats;
@@ -18,7 +20,7 @@ class StatsCard extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: Padding(
                 padding: EdgeInsets.only(
                   bottom: ScreenUtil().setHeight(40),
@@ -36,19 +38,20 @@ class StatsCard extends StatelessWidget {
 
                   child: Container(
                       width: ScreenUtil().setWidth(680),
-                      height: ScreenUtil().setHeight(1250),
+                      height: ScreenUtil().setHeight(850),
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            colors: stats.colors,
-                            begin: Alignment.topRight,
-                            end: Alignment.bottomLeft),
+                        color : Colors.white,
+                        // gradient: LinearGradient(
+                        //     colors: stats.colors,
+                        //     begin: Alignment.topRight,
+                        //     end: Alignment.bottomLeft),
                         boxShadow: [
                           BoxShadow(
                               blurRadius: 8,
-                              color: Colors.black26,
-                              offset: Offset(0, 0))
+                              color: Colors.black12,
+                              offset: Offset(0, 4))
                         ],
-                        borderRadius: BorderRadius.circular(30),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: CardContents(stats)),
                 ),
@@ -60,60 +63,109 @@ class StatsCard extends StatelessWidget {
 
   Widget CardContents(Stats stats) {
     return Stack(
+      
       children: <Widget>[
-        Positioned(
-            top: ScreenUtil().setHeight(50),
-            left: ScreenUtil().setWidth(50),
-            right: ScreenUtil().setWidth(50),
-            child: Text("${stats.name}",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: ScreenUtil().setSp(50),
-                    fontFamily: "Montserrat",
-                    fontWeight: FontWeight.w700))),
         Padding(
             padding: EdgeInsets.only(
-              left: ScreenUtil().setWidth(100),
-              top: ScreenUtil().setHeight(150),
+              left: ScreenUtil().setWidth(60),
+              right: ScreenUtil().setWidth(60),
+              top: ScreenUtil().setHeight(100),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                SubHeading("Total Cases"),
-                Stat(stats.totalCases),
-                SubHeading("Total Deaths"),
-                Stat(stats.newDeaths),
-                SubHeading("Total Recovered"),
-                Stat(stats.recovered)
+                title(stats, cardNum),
+                indicator(stats)
               ],
             ))
       ],
     );
   }
 
-  Widget SubHeading(text) {
-    return Padding(
-      padding: EdgeInsets.only(top: ScreenUtil().setHeight(45)),
-      child: Text(text,
-          style: TextStyle(
-              fontFamily: "Montserrat",
-              fontSize: ScreenUtil().setSp(55),
-              fontWeight: FontWeight.w500,
-              color: Colors.white)),
+  Widget title(stats, number){
+    return Row(children: <Widget>[
+      Text("${number+1}. ${stats.name}",
+                style: TextStyle(
+                    color: textColor,
+                    fontSize: ScreenUtil().setSp(60),
+                    fontFamily: "Montserrat",
+                    fontWeight: FontWeight.w700)
+      )
+    ],);
+  }
+
+
+
+  Widget label(text, number){
+    return Row(
+      
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Text(text , style : style() ),
+        Text(FormatNumber(number) , style : numeric() ),
+      ],
     );
   }
 
-  Widget Stat(text) {
+
+  Widget indicator( Stats stats){
     return Padding(
-        padding: EdgeInsets.only(top: ScreenUtil().setHeight(15)),
-        child: Text(
-          text,
-          style: TextStyle(
-              fontFamily: "Montserrat",
-              fontSize: ScreenUtil().setSp(90),
-              fontWeight: FontWeight.w500,
-              color: Colors.white,
-              letterSpacing: 3.0),
-        ));
+      padding: EdgeInsets.only(top: ScreenUtil().setHeight(35)),
+                // padding: EdgeInsets.all(2.0),
+                child: Column(
+                  children: <Widget>[
+                    label("Total", stats.totalCases),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    createIndicator( int.parse(stats.totalCases) , int.parse(stats.totalCases) , Color(0xff4384fe)),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    label("Recovered" , stats.recovered ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    createIndicator(int.parse(stats.recovered), int.parse(stats.totalCases), Color(Yellow)),
+
+                    SizedBox(
+                      height: 30,
+                    ),
+                    label("Deaths" , stats.totalDeaths),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    createIndicator(int.parse(stats.totalDeaths), int.parse(stats.totalCases), Color(Red))
+
+                  ],
+                ),
+              );
+  }
+
+  LinearPercentIndicator createIndicator( int value, int total , Color color){
+    double percent = double.parse((value / total).toStringAsFixed(2)) ;
+    return LinearPercentIndicator(
+                      width: 180.0,
+                      lineHeight: 8.0,
+                      percent: percent,
+                      backgroundColor:color.withAlpha(20) ,
+                      progressColor: color,
+                    );
+  }
+
+  TextStyle style(){
+    return TextStyle(
+      fontSize: ScreenUtil().setSp(40),
+      color: Colors.blue.shade900,
+      fontFamily: "Montserrat",
+      fontWeight: FontWeight.w700
+    );
+  }
+
+  TextStyle numeric(){
+    return TextStyle(fontSize: ScreenUtil().setSp(40),
+      color: Colors.blue.shade900,
+      fontFamily: "Montserrat",
+      fontWeight: FontWeight.w500 );
   }
 }

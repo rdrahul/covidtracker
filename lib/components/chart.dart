@@ -15,7 +15,7 @@ class StatsChartDonut extends StatelessWidget {
       behaviors: [new charts.DatumLegend()],
       
       defaultRenderer: new charts.ArcRendererConfig(
-            arcWidth: 40,
+            arcWidth: 10,
             arcRendererDecorators: [new charts.ArcLabelDecorator()]
           )
     );

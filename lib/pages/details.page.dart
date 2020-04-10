@@ -85,9 +85,10 @@ class _DetailsPageState extends State<DetailsPage> {
           }else if ( cases.label == "Deaths"){
             return charts.MaterialPalette.red.shadeDefault;
           }else {
-            return charts.MaterialPalette.gray.shadeDefault;
+            return charts.MaterialPalette.blue.shadeDefault;
           }
         },
+        
         
         data: data,
         // Set a label accessor to control the text of the arc label.
