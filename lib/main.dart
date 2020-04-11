@@ -115,7 +115,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   left: ScreenUtil().setHeight(40)),
                               child: heroStatsCard(
                                   totalStats != null
-                                      ? FormatNumber(totalStats.totalDeaths)
+                                      ? FormatNumber(totalStats.recovered)
                                       : "0",
                                   " Recovered" , Color(0xffffad3d) )),
                                   
@@ -139,7 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       left: ScreenUtil().setWidth(70)),
                   child: statsRow("Statistics By Countries", "", fontSize: 50)),
               SizedBox(height: ScreenUtil().setHeight(20)),
-              SizedBox(
+              Container(
                 height: ScreenUtil().setHeight(1000),
                 child: FutureBuilder<Map<String, dynamic>>(
                   future: futureStats,
@@ -255,7 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
             padding: EdgeInsets.only(
                 top: ScreenUtil().setHeight(50),
                 left: ScreenUtil().setWidth(50)),
-            child: StatsCard(stats: stat, cardNum: index),
+            child: StatsCard(stats: stat, cardNum: index, gestureEnabled: true,),
           );
         },
       );
@@ -264,9 +264,15 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // By default, show a loading spinner.
-    return SizedBox(
-        width: ScreenUtil().setHeight(50),
-        height: ScreenUtil().setWidth(50),
-        child: CircularProgressIndicator());
+    return Container(
+        width: 300,
+        height: 200,
+        child:  Container(
+          padding: EdgeInsets.all(16),
+          height: 50, 
+          width: 50, 
+          child: CircularProgressIndicator(),
+        ) 
+        );
   }
 }

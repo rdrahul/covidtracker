@@ -106,18 +106,6 @@ class _GuidelinePageState extends State<GuidelinePage> {
                 fontFamily: "Montserrat",
                 fontWeight: FontWeight.w700),
           ),
-
-          // IconButton(
-          //   icon : Icon(Icons.menu),
-          //   onPressed: ( ){},
-          // ),
-          // ClipOval(
-          //     clipper: ProfileClipper(),
-          //     child: Image.asset("assets/images/corona.jpeg",
-          //         width: ScreenUtil().setWidth(120),
-          //         height: ScreenUtil().setHeight(120),
-          //         fit: BoxFit.cover)),
-          // SizedBox(width: 30,),
         ],
       ),
     );
@@ -169,14 +157,17 @@ class _GuidelinePageState extends State<GuidelinePage> {
       { "image":"assets/images/breath.png" , "title":"Difficulty breathing" }, 
       { "image":"assets/images/fever.png" , "title":"Fever" },
     ];
+
     List<Widget> rowItems = symps.map( (item){
       return infoCard(item["image"] , item["title"]);
     }).toList();
 
+
+
     return SingleChildScrollView(
       padding: EdgeInsets.only(top:30,bottom:30),
       scrollDirection: Axis.horizontal,
-      child: Row(children: rowItems)
+      child: Row(children:   rowItems )
     );
     
 
@@ -191,7 +182,13 @@ class _GuidelinePageState extends State<GuidelinePage> {
           width: 150,
           decoration: BoxDecoration(
             border: Border.all(color : Color(background), width: 2),
-            
+            color : Colors.white,
+            boxShadow: [BoxShadow(
+                              blurRadius: 8,
+                              spreadRadius: -4,
+                              color: Colors.black12,
+                              offset: Offset(0, 1)) 
+            ],
             borderRadius: BorderRadius.circular(8)
            ),
           child : Column(
@@ -202,7 +199,7 @@ class _GuidelinePageState extends State<GuidelinePage> {
           Padding(padding: EdgeInsets.only(top:20),
             child:           
             Text( title, style: TextStyle(
-              fontSize: 20,
+              fontSize: 18,
                 color: Color(0xff0f2e81),
                 fontFamily: "Montserrat",
                 fontWeight: FontWeight.w700
@@ -218,19 +215,32 @@ class _GuidelinePageState extends State<GuidelinePage> {
 
   Widget prevention(){
     var prevs = [
-      { "image" :"assets/images/mask.png" , "title" : "War mas", "description" :  "sdfasf asf dsfa sdf asf asdf asfsdf"},
-      { "image" :"assets/images/mask.png" , "title" : "War mas", "description" :  "sdfasf asf dsfa sdf asf asdf asfsdf"},
-      { "image" :"assets/images/mask.png" , "title" : "War mas", "description" :  "sdfasf asf dsfa sdf asf asdf asfsdf"}
+      { "image" :"assets/images/mask.png" , "title" : "Wear mask", "description" :  "Wear a mask if you are coughing or sneezing.Avoid touching the mask while using it;"},
+      { "image" :"assets/images/wash.png" , "title" : "Wash hands", "description" :  "Wash your hands regularly for 20 seconds, with soap and water or alcohol-based hand rub"},
+      { "image" :"assets/images/sanitize.png" , "title" : "Sanitize", "description" :  "Avoid close contact (1 meter or 3 feet) with people who are unwell"},
+      { "image" :"assets/images/noserug.png" , "title" : "Use nose rug", "description" :  "Cover your nose and mouth with a disposable tissue or flexed elbow when you cough or sneeze"}
       ];
     List<Widget> widg = prevs.map( (item) {
-      return detailInfoCard();
+      return detailInfoCard(item["image"] , item["title"] , item["description"] );
     }).toList();
+
+        var container = Container(
+      width: double.infinity,
+      // height: 200,
+      child: Column(children: <Widget>[
+          Image.asset("assets/images/home.jpg"),
+          
+        ],
+      ),
+      );
+    widg.add(container);
+
     return Container(margin: EdgeInsets.all(20) ,
       child: Column(children: widg,),
     );
   }
 
-  Widget detailInfoCard(){
+  Widget detailInfoCard(String image , String title , String description){
     return Row(
       
       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -238,11 +248,11 @@ class _GuidelinePageState extends State<GuidelinePage> {
       children: <Widget>[
       Expanded(
         flex: 1,
-        child: Image.asset("assets/images/mask.png" , width: 80, height: 80,),),
+        child: Image.asset(image , width: 70, height: 70,),),
       Expanded(
         flex: 2,
         child: Container(
-        height: 100,
+        // height: 100,
         margin: EdgeInsets.all(10),
         padding: EdgeInsets.all(10),
         // height:MediaQuery.of(context).size.width * 0.9 ,
@@ -255,12 +265,15 @@ class _GuidelinePageState extends State<GuidelinePage> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-          Text("Wear Mask" , style: TextStyle( 
+          Text(title , style: TextStyle( 
             fontFamily: FontFamily,
             fontWeight: FontWeight.w700,
             color: textColor , 
-            fontSize: 24),),
-          Text("Wear Mask at all the times"),
+            fontSize: 20),),
+            SizedBox(height: 5,),
+          Text(description, style:  TextStyle(fontFamily: FontFamily,
+            fontWeight: FontWeight.w500,
+            color: textColor ),),
       ],),
       ),
       ),

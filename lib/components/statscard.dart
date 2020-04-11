@@ -11,7 +11,10 @@ import 'package:percent_indicator/percent_indicator.dart';
 class StatsCard extends StatelessWidget {
   final Stats stats;
   final int cardNum;
-  const StatsCard({this.stats, this.cardNum});
+  final bool gestureEnabled;
+
+  //TODO Custom click handler 
+  const StatsCard({this.stats, this.cardNum , this.gestureEnabled});
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +30,14 @@ class StatsCard extends StatelessWidget {
                 ),
                 child: InkWell(
                                     
-                  onTap: (){ 
+                  onTap: gestureEnabled ? (){ 
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => DetailsPage(stats: stats),
                         ), // opens the details page
                       );
-                   },
+                   } : (){} ,
 
                   child: Container(
                       width: ScreenUtil().setWidth(680),

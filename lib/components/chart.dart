@@ -12,11 +12,12 @@ class StatsChartDonut extends StatelessWidget {
   Widget build(BuildContext context) {
     return new charts.PieChart(seriesList,
       animate : animate ,
-      behaviors: [new charts.DatumLegend()],
+      // behaviors: [new charts.DatumLegend()],
       
       defaultRenderer: new charts.ArcRendererConfig(
-            arcWidth: 10,
-            arcRendererDecorators: [new charts.ArcLabelDecorator()]
+            arcWidth: 30,
+            // arcRendererDecorators: [new charts.ArcLabelDecorator()]
+            arcRendererDecorators: []
           )
     );
   }

@@ -35,3 +35,7 @@ Launch the backend with
 ```sh 
 python app.py
 ```
+
+
+credits : 
+Stay Home image - <a href="https://www.freepik.com/free-photos-vectors/home">Home vector created by freepik - www.freepik.com</a>
