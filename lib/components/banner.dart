@@ -25,24 +25,6 @@ class Guidelines extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   color: Color( background )
                 ),
-                
-                // decoration: BoxDecoration(
-                //     color : Color(0xff3267f6),
-                //     // gradient: LinearGradient(colors: [
-                //     //   Color(0xff093ad2), //Colors.deepOrange,
-                //     //   Color(0xff093ad2)
-                //     // ]),
-                //     boxShadow: [
-                //       BoxShadow(
-                //           color: Colors.black12,
-                //           offset: Offset(0, 4),
-                //           blurRadius: 4),
-                //       BoxShadow(
-                //           color: Colors.black12,
-                //           offset: Offset(0, -6),
-                //           blurRadius: 7)
-                //     ],
-                //     borderRadius: BorderRadius.circular(16)),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +57,7 @@ class Guidelines extends StatelessWidget {
                 child: Image.asset(
                   'assets/images/cdc.png',
                   width: ScreenUtil().setWidth(450),
-                  height: ScreenUtil().setHeight(600),
+                  height: ScreenUtil().setHeight(500),
                 ),
               )
             ],

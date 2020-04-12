@@ -37,6 +37,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Future<Map<String, dynamic>> futureStats;
   Stats totalStats;
+  TextEditingController editingController = TextEditingController();
+  String searchString = "";
 
   @override
   void initState() {
@@ -51,162 +53,187 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     ScreenUtil.init(context, width: 1125, height: 2436, allowFontScaling: true);
-    return Scaffold(
-      backgroundColor:  Color(0xfffdfdfd), //Colors.grey.shade200,
-      body: SingleChildScrollView(
-          child: ConstrainedBox(
-        constraints: BoxConstraints(),
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Navbar(),
-              Padding(
-                  padding: EdgeInsets.only(
-                      left: ScreenUtil().setWidth(10),
-                      right: ScreenUtil().setWidth(10),
-                      top: ScreenUtil().setHeight(50),
-                      bottom: ScreenUtil().setHeight(40)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding:
-                            EdgeInsets.only(bottom: ScreenUtil().setHeight(20), left : ScreenUtil().setWidth(60)),
-                        // ---------- heading --------
-                        child: Text("COVID-19",
-                            textAlign: TextAlign.left,
-                            style: TextStyle(
-                              fontSize: ScreenUtil().setSp(68),
-                              color: Colors.black54,
-                              fontFamily: "Montserrat",
-                              fontWeight: FontWeight.w700,
-                            )),
-                      ),
+    return GestureDetector(
+          onTap: (){
+            //remove the focus from the text input
+            FocusScopeNode currentFocus = FocusScope.of(context);
 
-                      // ---------- First Row  --------
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                        children: <Widget>[
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+          },
+          child: Scaffold(
+        backgroundColor: Color(0xfffdfdfd), //Colors.grey.shade200,
+        body: SingleChildScrollView(
+            child: ConstrainedBox(
+          constraints: BoxConstraints(),
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.only(
+                        left: ScreenUtil().setWidth(10),
+                        right: ScreenUtil().setWidth(10),
+                        top: ScreenUtil().setHeight(50),
+                        bottom: ScreenUtil().setHeight(40)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top :ScreenUtil().setHeight(20),
+                              bottom: ScreenUtil().setHeight(20),
+                              left: ScreenUtil().setWidth(60)),
+                          // ---------- heading --------
+                          child: Text("COVID-19",
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: ScreenUtil().setSp(68),
+                                color: Colors.black54,
+                                fontFamily: "Montserrat",
+                                fontWeight: FontWeight.w700,
+                              )),
+                        ),
+
+                        // ---------- First Row  --------
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: <Widget>[
                               Row(
-                        children: <Widget>[
-                          
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  top: ScreenUtil().setHeight(40),
-                                  bottom: ScreenUtil().setHeight(40)),
-                              child: heroStatsCard(
-                                  totalStats != null
-                                      ? FormatNumber(totalStats.totalCases)
-                                      : "0",
-                                  " Cases", Color(0xff544df3) ) ,   ),
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenUtil().setHeight(40)),
-                              child: heroStatsCard(
-                                  totalStats != null
-                                      ? FormatNumber(totalStats.totalDeaths)
-                                      : "0",
-                                  " Deaths" , Color(0xffff5053) )),
-                          
-                          Padding(
-                              padding: EdgeInsets.only(
-                                  left: ScreenUtil().setHeight(40)),
-                              child: heroStatsCard(
-                                  totalStats != null
-                                      ? FormatNumber(totalStats.recovered)
-                                      : "0",
-                                  " Recovered" , Color(0xffffad3d) )),
-                                  
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: ScreenUtil().setHeight(40),
+                                        bottom: ScreenUtil().setHeight(40)),
+                                    child: heroStatsCard(
+                                        totalStats != null
+                                            ? FormatNumber(totalStats.totalCases)
+                                            : "0",
+                                        " Cases",
+                                        Color(0xff544df3)),
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                          left: ScreenUtil().setHeight(40)),
+                                      child: heroStatsCard(
+                                          totalStats != null
+                                              ? FormatNumber(
+                                                  totalStats.totalDeaths)
+                                              : "0",
+                                          " Deaths",
+                                          Color(0xffff5053))),
+                                  Padding(
+                                      padding: EdgeInsets.only(
+                                          left: ScreenUtil().setHeight(40)),
+                                      child: heroStatsCard(
+                                          totalStats != null
+                                              ? FormatNumber(totalStats.recovered)
+                                              : "0",
+                                          " Recovered",
+                                          Color(0xffffad3d))),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
 
+                        // ---------- Second Row  --------
+                      ],
+                    )),
+                Padding(
+                    padding: EdgeInsets.only(
+                        top: ScreenUtil().setHeight(50),
+                        left: ScreenUtil().setWidth(70)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        statsRow("Countries", "", fontSize: 50),
+                        Container(
+                          padding: EdgeInsets.only(right : 10),
+                          width: 200,
+                          height: 40,
+                          child: TextField(
+                            textAlignVertical: TextAlignVertical.center,
+                            style: TextStyle(fontSize: 18),
+                          onChanged: (value){
+                            
+                            setState(() {
+                              searchString = value;  
+                            });
+                          },
+                          controller: editingController,
+                          decoration: InputDecoration(
 
-                        ],
-                      ),
+                              hintText: "Search",
+                              suffixIcon: Icon(Icons.search),
 
+                          ),
+                        ),
+                        )
 
-                          
-                        ],
-                      ),
-                      ),
-
-                      // ---------- Second Row  --------
-                    ],
-                  )),
-              Padding(
-                  padding: EdgeInsets.only(
-                      top: ScreenUtil().setHeight(50),
-                      left: ScreenUtil().setWidth(70)),
-                  child: statsRow("Statistics By Countries", "", fontSize: 50)),
-              SizedBox(height: ScreenUtil().setHeight(20)),
-              Container(
-                height: ScreenUtil().setHeight(1000),
-                child: FutureBuilder<Map<String, dynamic>>(
-                  future: futureStats,
-                  builder: displayStats,
+                      ],
+                    )),
+                SizedBox(height: ScreenUtil().setHeight(20)),
+                Container(
+                  height: ScreenUtil().setHeight(950),
+                  child: FutureBuilder<Map<String, dynamic>>(
+                    future: futureStats,
+                    builder: displayStats,
+                  ),
                 ),
-              ),
-              Guidelines()
-            ]),
-      )),
+                Guidelines()
+              ]),
+        )),
+      ),
     );
   }
 
-  Widget heroStatsCard(number, title , color ) {
+  Widget heroStatsCard(number, title, color) {
     return Container(
-        margin: EdgeInsets.only(left : 10),
+        margin: EdgeInsets.only(left: 10),
         width: 150,
         alignment: Alignment.centerLeft,
-        
         padding: EdgeInsets.only(
             left: 10,
             top: ScreenUtil().setHeight(100),
             bottom: ScreenUtil().setHeight(100)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
-
-
-          //purrpl = 0xff544df3
-          //red = 0xffff5053
-          //yel = 0xffffad3d
-          //background : 0xffe9e9ff
-
-          color : color,
-          // gradient: LinearGradient(colors: [
-          //   Colors.grey.shade200,
-          //   Colors.blue.shade200
-          // ]),
-          boxShadow: [BoxShadow(
-                              blurRadius: 4,
-                              color: color.withAlpha(200) ,
-                              offset: Offset(0, 1)) 
+          color: color,
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 4,
+                color: color.withAlpha(200),
+                offset: Offset(0, 1))
           ],
         ),
-        
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-          
-          Text(
-            number,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: ScreenUtil().setSp(67),
-              color: Colors.white,
-              fontFamily: "Montserrat",
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          Text(title , textAlign: TextAlign.left,
-            style: TextStyle(
-               fontSize: ScreenUtil().setSp(40),
-              color: Colors.white70,
-              fontFamily: "Montserrat",
-              fontWeight: FontWeight.w700,
-            ),
-           ),
-        ]));
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                number,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: ScreenUtil().setSp(67),
+                  color: Colors.white,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              Text(
+                title,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontSize: ScreenUtil().setSp(40),
+                  color: Colors.white70,
+                  fontFamily: "Montserrat",
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ]));
   }
 
   Widget statsRow(String number, String title, {int fontSize = 150}) {
@@ -233,10 +260,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Widget Navbar() {
-    return Container();
-  }
-
   /**
    * The Statistics Wrapper 
    * Supplies Data to Listview and Renders the StatsCard
@@ -244,18 +267,28 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget displayStats(context, snapshot) {
     if (snapshot.hasData) {
       List<Stats> stats = snapshot.data["all"];
-
+      List<Stats> duplicateList = List<Stats>();  
+      
+      stats.forEach( (val){
+        if (val.name.toLowerCase().contains(searchString.toLowerCase())){
+          duplicateList.add(val);
+        }
+      });
       return ListView.builder(
         scrollDirection: Axis.horizontal,
         physics: BouncingScrollPhysics(),
-        itemCount: stats.length,
+        itemCount: duplicateList.length,
         itemBuilder: (context, index) {
-          Stats stat = stats[index];
+          Stats stat = duplicateList[index];
           return Padding(
             padding: EdgeInsets.only(
                 top: ScreenUtil().setHeight(50),
                 left: ScreenUtil().setWidth(50)),
-            child: StatsCard(stats: stat, cardNum: index, gestureEnabled: true,),
+            child: StatsCard(
+              stats: stat,
+              cardNum: index,
+              gestureEnabled: true,
+            ),
           );
         },
       );
@@ -267,12 +300,11 @@ class _MyHomePageState extends State<MyHomePage> {
     return Container(
         width: 300,
         height: 200,
-        child:  Container(
+        child: Container(
           padding: EdgeInsets.all(16),
-          height: 50, 
-          width: 50, 
+          height: 50,
+          width: 50,
           child: CircularProgressIndicator(),
-        ) 
-        );
+        ));
   }
 }
