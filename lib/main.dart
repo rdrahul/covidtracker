@@ -1,6 +1,5 @@
 import 'package:corona/components/banner.dart';
 import 'package:corona/repository/stats.repository.dart';
-import 'package:corona/utils/profileclipper.dart';
 import 'package:corona/utils/utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

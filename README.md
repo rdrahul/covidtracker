@@ -1,6 +1,15 @@
-# GoCorona : The Covid Tracker
-<img src="./assets/app.gif" 
+# Cotrack : The Covid-19 Tracker
+
+
+
+<img src="./images/screen1.jpeg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="480" border="10" />
+
+<img src="images/details.jpeg" 
+alt="IMAGE ALT TEXT HERE" width="240" height="480" border="10" />
+
+<img src="./images/awareness.jpeg" 
+alt="IMAGE ALT TEXT HERE" />
 
 A Coronavirus Tracker Application Written in flutter and Python(Flask).
 
